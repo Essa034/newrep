@@ -8,49 +8,48 @@ const todoList = () => {
     }
   
     const overdue = () => {
-        let k=0,temp=[];
+        let temp=[];
         for(let i=0;i<5;i++){
             if(all[i].dueDate==new Date(new Date().setDate(dateToday.getDate() - 1)).toISOString().split("T")[0]){
-                temp[k]=all[i];
-                k++;
+                temp.push(all[i]);
             }
         }
         return temp;
     }
   
     const dueToday = () => {
-        let k=0,temp=[];
+        let temp=[];
         for(let i=0;i<5;i++){
         if(all[i].dueDate==new Date().toISOString().split("T")[0]){
             
             all[i].dueDate='';
-            temp[k]=all[i];
-            k++;
+            temp.push(all[i]);
         }
     }
     return temp;
     }
   
     const dueLater = () => {
-        let k=0,temp=[];
+        let temp=[];
         for(let i=0;i<5;i++){
             if(all[i].dueDate==new Date(new Date().setDate(dateToday.getDate() + 1)).toISOString().split("T")[0]){
-                temp[k]=all[i];
-                k++;
+                temp.push(all[i]);
             }
         }
         return temp;
     }
   
     const toDisplayableList = (list) => {
+      let s='';
      for(let i=0;i<list.length;i++){
         if(list[i].completed==true){
-            console.log('[x] '+list[i].title+' '+list[i].dueDate);
+            s+='[x] '+list[i].title+' '+list[i].dueDate+"\n";
         }
         else{
-            console.log('[ ] '+list[i].title+' '+list[i].dueDate);
+            s+='[ ] '+list[i].title+' '+list[i].dueDate+"\n";
         }
         }
+        return s;
      }
     
   
