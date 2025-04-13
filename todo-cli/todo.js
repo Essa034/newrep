@@ -43,10 +43,14 @@ const todoList = () => {
       let s='';
      for(let i=0;i<list.length;i++){
         if(list[i].completed==true){
-            s+='[x] '+list[i].title+' '+list[i].dueDate+"\n";
+            s+='[x] '+list[i].title+' '+list[i].dueDate;
         }
         else{
-            s+='[ ] '+list[i].title+' '+list[i].dueDate+"\n";
+            s+='[ ] '+list[i].title+' '+list[i].dueDate;
+
+        }
+        if(i!=list.length-1){
+          s+="\n";
         }
         }
         return s;
