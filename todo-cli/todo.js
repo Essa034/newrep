@@ -1,13 +1,40 @@
 const todoList = () => {
-    all = []
+    let all = []
     const add = (todoItem) => {
       all.push(todoItem)
     }
     const markAsComplete = (index) => {
       all[index].completed = true
     }
-  
     const overdue = () => {
+      return all.filter((item)=> item.dueDate<new Date().toISOString().slice(0,10));
+  }
+  const dueToday = () => {
+    return all.filter((item)=> item.dueDate===new Date().toISOString().slice(0,10));
+  }
+
+
+  const dueLater = () => {
+    return all.filter((item)=> item.dueDate>new Date().toISOString().slice(0,10));
+  }
+
+  const toDisplayableList = (list) => {
+    return list
+    .map(
+      (item) =>
+        `${item.completed ? '[x]' : '[ ]'} ${item.title} ${
+          item.dueDate === new Date().toISOString().slice(0, 10)
+            ? ''
+            : item.dueDate
+        }`
+    )
+    .join('\n')
+}
+return {all,add,markAsComplete,overdue,dueToday,dueLater,toDisplayableList};
+  
+}
+  module.exports = todoList
+    /*const overdue = () => {
         let temp=[];
         for(let i=0;i<5;i++){
             if(all[i].dueDate==new Date(new Date().setDate(dateToday.getDate() - 1)).toISOString().split("T")[0]){
@@ -55,7 +82,7 @@ const todoList = () => {
         }
         return s;
      }
-    
+}
   
     return {
       all,
@@ -111,4 +138,4 @@ const todoList = () => {
   let itemsDueLater = todos.dueLater()
   let formattedItemsDueLater = todos.toDisplayableList(itemsDueLater)
   console.log(formattedItemsDueLater)
-  console.log("\n\n")
+  console.log("\n\n")*/
