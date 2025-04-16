@@ -55,6 +55,7 @@ module.exports = (sequelize, DataTypes) => {
       });    }
 
     static async dueLater() {
+      c=0;
       return await Todo.findAll({
         where: {
           dueDate: {
