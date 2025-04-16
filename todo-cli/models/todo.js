@@ -1,5 +1,6 @@
 // models/todo.js
 'use strict';
+let c=0;
 const { Model,Op } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
   class Todo extends Model {
@@ -43,6 +44,7 @@ module.exports = (sequelize, DataTypes) => {
       });    }
 
     static async dueToday() {
+      c=1;
       return await Todo.findAll({
         where: {
           dueDate: {
@@ -75,8 +77,14 @@ module.exports = (sequelize, DataTypes) => {
 
     displayableString() {
       let checkbox = this.completed ? '[x]' : '[ ]';
+      if(c===0){
       return `${this.id}. ${checkbox} ${this.title} ${this.dueDate}`;
     }
+    else{
+      return `${this.id}. ${checkbox} ${this.title}`;
+
+    }
+  }
   }
   Todo.init(
     {
