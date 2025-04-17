@@ -3,8 +3,14 @@ const express = require('express')
 const { Todo } = require('./models');
 const app = express()
 app.use(express.json());
-app.get("/todos", (request, response) => {
-    response.send("Todo list")
+app.get("/todos", async (request, response) => {
+    
+    try{
+        const tod=await Todo.findAll();
+        return response.json(tod);
+    }catch(error){
+        return response.json(error);
+    }
 })
 app.post("/todos", async (request, response) => {
     console.log("creating a todo", request.body)
@@ -29,7 +35,21 @@ app.put("/todos/:id/markAsCompleted", async (request, response) => {
 
     }
 })
-app.delete("/todos/:id", (request, response) => {
+app.delete("/todos/:id", async (request, response) => {
     console.log("delete a todo by ID: ", request.params.id)
+    try{
+        const tod=await Todo.destroy({
+            where:{
+                id:request.params.id,
+            }
+        });
+        if(tod ===1){
+        return response.json(true);}
+        else{
+            return response.json(false);
+        }
+    }catch(error){
+        response.json(error)
+    }
 })
 module.exports = app;
