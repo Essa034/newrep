@@ -10,7 +10,9 @@
         
         
         <div>
-            <h5>Overdue (<%= overdueCount %>) </h5>
+            <section>
+            <h5>Overdue<h2 id="count-overdue"><%= overdueCount %></h2>
+            </h5>
             <ul class="list-none">
                 <% for(var i=0;i<overdue.length;i++){%>  
                 <li class="Todo-Item">
@@ -28,7 +30,10 @@
                
                   
             </ul>
-            <h5>Due Today (<%= dueTodayCount %>)</h5>
+        </section>
+        <section>
+            <h5>Due Today <h2 id="count-due-today"><%= dueTodayCount %></h2>
+            </h5>
             <ul class="list-none">
                 <% for(var i=0;i<dueToday.length;i++){%>  
                 <li class="Todo-Item">
@@ -46,7 +51,10 @@
                
                   
             </ul>
-            <h5>Due later (<%= dueLaterCount %>)</h5>
+        </section>
+            <section>
+            <h5>Due later <h2 id="count-due-later"> <%= dueLaterCount %></h2>
+            </h5>
             <ul class="list-none">
                 <ul class="list-none">
                     <% for(var i=0;i<dueLater.length;i++){%>  
@@ -61,6 +69,7 @@
                           </a>
                         </div>
                       </li> <%}%>
+                    </section>
         </div>
     </div>
     
