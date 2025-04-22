@@ -1,6 +1,9 @@
 
 const express = require('express')
 const { Todo } = require('./models');
+const { sequelize } = require('./models');
+
+
 const path = require("path")
 const app = express()
 app.use(express.json());
