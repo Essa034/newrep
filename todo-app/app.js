@@ -12,7 +12,7 @@ app.get("/",async (request,response)=>{
     
    
     const allTodos= await Todo.gettodos();
-    console.log("✅ allTodos:", allTodos);
+   
     if(request.accepts('html')){
         response.render('index',{
         allTodos
