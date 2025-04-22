@@ -9,7 +9,10 @@ const app = express()
 app.use(express.json());
 app.set("view engine","ejs");
 app.get("/",async (request,response)=>{
+    
+   
     const allTodos= await Todo.gettodos();
+    console.log("✅ allTodos:", allTodos);
     if(request.accepts('html')){
         response.render('index',{
         allTodos
@@ -21,14 +24,14 @@ app.get("/",async (request,response)=>{
     }
 });
 app.use(express.static(path.join(__dirname,'public')));
-app.get("/todoss", async (request, response) => {
-    console.log("todo list",request.body);
-    /*try{
+app.get("/todos", async (request, response) => {
+   
+    try{
         const tod=await Todo.findAll();
         return response.json(tod);
     }catch(error){
         return response.json(error);
-    }*/
+    }
 })
 app.post("/todos", async (request, response) => {
     console.log("creating a todo", request.body)
