@@ -2,3 +2,6 @@ body{
     color: grey;
     font-family:'Courier New','Courier New', Courier, monospace;
 }
+.Todo-Item:hover .trash-icon{
+    display:block;
+}

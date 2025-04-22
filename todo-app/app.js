@@ -3,22 +3,41 @@ const express = require('express')
 const { Todo } = require('./models');
 const { sequelize } = require('./models');
 
+const { format, isBefore, isToday } = require("date-fns"); // <-- Add isToday here
 
 const path = require("path")
 const app = express()
 app.use(express.json());
 app.set("view engine","ejs");
 app.get("/",async (request,response)=>{
+    const allTodos = await Todo.findAll();
+    const currentDate=new Date();
+    const overdue = allTodos.filter(todo => isBefore(new Date(todo.dueDate), currentDate));
+    const dueToday = allTodos.filter(todo => isToday(new Date(todo.dueDate)));
+    const dueLater = allTodos.filter(todo => !isBefore(new Date(todo.dueDate), currentDate) && !isToday(new Date(todo.dueDate)));
+    const overdueCount = overdue.length;
+    const dueTodayCount = dueToday.length;
+    const dueLaterCount = dueLater.length;
     
-   
-    const allTodos= await Todo.gettodos();
-   
+    
     if(request.accepts('html')){
         response.render('index',{
+            overdue: overdue,
+            overdueCount: overdueCount,
+            dueToday: dueToday,
+            dueTodayCount: dueTodayCount,
+            dueLater: dueLater,
+            dueLaterCount: dueLaterCount,    
         allTodos
     });}
     else{
         response.json({
+            overdue: overdue,
+            overdueCount: overdueCount,
+            dueToday: dueToday,
+            dueTodayCount: dueTodayCount,
+            dueLater: dueLater,
+            dueLaterCount: dueLaterCount,
             allTodos
         })
     }
@@ -73,4 +92,8 @@ app.delete("/todos/:id", async (request, response) => {
         response.json(error)
     }
 })
+
+    
+
+
 module.exports = app;
