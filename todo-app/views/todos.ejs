@@ -11,8 +11,8 @@
         
         <div>
             <section>
-            <h5>Overdue<h2 id="count-overdue"><%= overdueCount %></h2>
-            </h5>
+            <h5>Overdue</h5><h2 id="count-overdue"><%= overdueCount %></h2>
+           
             <ul class="list-none">
                 <% for(var i=0;i<overdue.length;i++){%>  
                 <li class="Todo-Item">
@@ -25,15 +25,15 @@
                           </svg> 
                       </a>
                     </div>
-                  </li> <%}%>
+                  </li><%}%>
                   
                
                   
             </ul>
         </section>
         <section>
-            <h5>Due Today <h2 id="count-due-today"><%= dueTodayCount %></h2>
-            </h5>
+            <h5>Due Today</h5> <h2 id="count-due-today"><%= dueTodayCount %></h2>
+            
             <ul class="list-none">
                 <% for(var i=0;i<dueToday.length;i++){%>  
                 <li class="Todo-Item">
@@ -53,10 +53,9 @@
             </ul>
         </section>
             <section>
-            <h5>Due later <h2 id="count-due-later"> <%= dueLaterCount %></h2>
-            </h5>
-            <ul class="list-none">
-                <ul class="list-none">
+            <h5>Due Later</h5> <h2 id="count-due-later"> <%= dueLaterCount %></h2>
+            
+             <ul class="list-none">
                     <% for(var i=0;i<dueLater.length;i++){%>  
                     <li class="Todo-Item">
                         <div class="group flex items-center w-full my-2 px-2 py-1 rounded hover:bg-purple-50">
@@ -69,6 +68,7 @@
                           </a>
                         </div>
                       </li> <%}%>
+                    </ul>
                     </section>
         </div>
     </div>
