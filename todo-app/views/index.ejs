@@ -3,23 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="<%= csrfToken %>"/>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="./CSS/styles.css" rel="stylesheet">
     <title>Todo manager</title>
+    <script>
+        var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+
+async function updatetodo(id) {
+  const checkbox = document.getElementById(`todo-checkbox-${id}`);
+  const completed = checkbox.checked;
+
+  const response = await fetch(`/todos/${id}/setCompletionStatus`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'CSRF-Token': token 
+    },
+    body: JSON.stringify({ completed })
+  });
+
+  if (response.ok) {
+    checkbox.checked = data.completed;
+    const data = await response.json();
+    console.log('Updated:', data);
+  } else {
+    console.error('Failed to update');
+  }
+}
+
+        function deleteTodo(id){
+            fetch(`todos/${id}`,{
+                method:"delete",
+                headers:{"Content-Type": "application/json"},
+                body:  JSON.stringify({
+                "_csrf": token
+            })
+            })
+                .then((res)=>{
+                if(res.ok){
+                    window.location.reload();
+                }
+            }).catch((err)=>
+                console.log(err));
+            }
+    
+    </script>
+
 </head>
 <body>
-    <div class="grid grid cols-6">
+    <div class="grid">
         <div class="col-start-3 col-span-2">
             <%- include('header.ejs') %>
 
-            <form action="">
+            <form id="todoform" action="/todos" method="post">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
                 <div class="flex gap-2 py-4">
                     <div class="flex-auto">  
-                        <input type="text" placeholder="what's next?" class="border border-gray-300 rounded text-gray-900 w-full p-2 text leading-4" requires/>
+                        <input id="title" type="text" name="title" placeholder="what's next?" class="border border-gray-300 rounded text-gray-900 w-full p-2 text leading-4">
                     </div>
                     
                 <div class="flex-auto">
-                    <input type="date"class="border border-gray-300 rounded text-gray-900 w-full p-2 text-sm">
+                    <input type="date" id="dueDate" name="dueDate" class="border border-gray-300 rounded text-gray-900 w-full p-2 text-sm">
                 </div>
                 <div class="flex-none">
                     <button type="submit" class="bg-green-600 text-white px-5 py-2 rounded font-medium mr-2 mb-2">Add</button>
@@ -30,7 +75,20 @@
         </form>
         <%-include('todos.ejs') %>
     </div>
-
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          document.getElementById("todoform").addEventListener("submit", function (e) {
+            const title = document.getElementById("title").value.trim();
+            const dueDate = document.getElementById("dueDate").value;
+      
+            if (!title || !dueDate) {
+              alert("Both title and due date are required!");
+              e.preventDefault(); 
+            }
+          });
+        });
+      </script>
+      
 </body>
 </html>
         

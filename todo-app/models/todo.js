@@ -16,10 +16,14 @@ module.exports = (sequelize, DataTypes) => {
     static addTodo({ title, dueDate }) {
       return this.create({ title: title, dueDate: dueDate, completed: false });
     }
-
-    markAsCompleted() {
-      return this.update({ completed: true });
+    static async remove(id){
+      return this.destroy({
+        where:{
+          id,
+        },
+      });
     }
+    
   }
   Todo.init(
     {
@@ -32,5 +36,13 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "Todo",
     }
   );
+  Todo.prototype.setCompletionStatus = async function(status) {
+    
+      this.completed = status;
+      await this.save();
+      console.log(this);
+      return this;  
+    
+  };
   return Todo;
 };
