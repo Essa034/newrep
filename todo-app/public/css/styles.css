@@ -1,7 +1,7 @@
-body{
-    color: grey;
-    font-family:'Courier New','Courier New', Courier, monospace;
+body {
+  color: grey;
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
 }
-.Todo-Item:hover .trash-icon{
-    display:block;
+.Todo-Item:hover .trash-icon {
+  display: block;
 }

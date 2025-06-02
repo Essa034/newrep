@@ -1,151 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="csrf-token" content="<%= csrfToken %>"/>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="./CSS/styles.css" rel="stylesheet">
-    <title>Todo manager</title>
-    <script>
-        var token = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="csrf-token" content="<%= csrfToken %>" />
+  <link rel="stylesheet" href="/css/styles.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    var token= document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    function toggleCompletionStatus(id, completed) {
+      fetch(`/todos/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ completed: completed, _csrf: token }),
+      })
+      .then((res) => {
+        if (res.ok) {
+          window.location.reload();
+        }
+      })
+      .catch((err) => console.error(err));
+    }
 
-async function updatetodo(id) {
-  const checkbox = document.getElementById(`todo-checkbox-${id}`);
-  const completed = checkbox.checked;
-
-  const response = await fetch(`/todos/${id}/setCompletionStatus`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      'CSRF-Token': token 
-    },
-    body: JSON.stringify({ completed })
-  });
-
-  if (response.ok) {
-    checkbox.checked = data.completed;
-    const data = await response.json();
-    console.log('Updated:', data);
-  } else {
-    console.error('Failed to update');
-  }
-}
-
-        function deleteTodo(id){
-            fetch(`todos/${id}`,{
-                method:"delete",
-                headers:{"Content-Type": "application/json"},
-                body:  JSON.stringify({
-                "_csrf": token
-            })
-            })
-                .then((res)=>{
-                if(res.ok){
-                    window.location.reload();
-                }
-            }).catch((err)=>
-                console.log(err));
-            }
+    // Delete Todo
+    function deleteTodo(id) {
+      fetch(`/todos/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ _csrf: token }),
+      })
+      .then((res) => {
+        if (res.ok) {
+          window.location.reload();
+        }
+      })
+      .catch((err) => console.error(err)); 
+    }
     
-    </script>
-
+    // Validate form fields
+    function validateForm() {
+      const title = document.getElementById('title').value;
+      const dueDate = document.getElementById('dueDate').value;
+      return title && dueDate;
+    }
+  </script>
+  <title>To-Do Manager</title>
 </head>
 <body>
-    <div class="grid">
-        <div class="col-start-3 col-span-2">
-            <%- include('header.ejs') %>
+  <div class="grid grid-cols-6">
+    <div class="col-start-3 col-span-2">
 
-            <form id="todoform" action="/todos" method="post">
-                <input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
-                <div class="flex gap-2 py-4">
-                    <div class="flex-auto">  
-                        <input id="title" type="text" name="title" placeholder="what's next?" class="border border-gray-300 rounded text-gray-900 w-full p-2 text leading-4">
-                    </div>
-                    
-                <div class="flex-auto">
-                    <input type="date" id="dueDate" name="dueDate" class="border border-gray-300 rounded text-gray-900 w-full p-2 text-sm">
-                </div>
-                <div class="flex-none">
-                    <button type="submit" class="bg-green-600 text-white px-5 py-2 rounded font-medium mr-2 mb-2">Add</button>
-                </div>
-                
-            
+      <!-- Header Section -->
+      <%- include("header") %>
+
+      <!-- Form to Add New Todo -->
+      <form action="/todos" method="POST">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>" />
+        <div class="flex flex-wrap items-center gap-2 py-4">
+          <div class="flex-auto">
+            <input type="text" name="title" placeholder="Enter a new to-do"
+              class="border border-gray-300 rounded text-gray-900 w-full p-2 text-sm" required />
+          </div>
+          <div class="flex-auto">
+            <input type="date" name="dueDate"
+              class="border border-gray-300 rounded text-gray-900 w-full p-2 text-sm" required />
+          </div>
+          <div class="flex-none">
+            <button type="submit"
+              class="bg-green-600 text-white px-5 py-1.5 rounded font-medium">Add</button>
+          </div>
         </div>
-        </form>
-        <%-include('todos.ejs') %>
+      </form>
+
+      <!-- Render Todos -->
+      <%- include("todos", { overdue, dueToday, dueLater, completed }) %>
+
+      <!-- Footer -->
+      <%- include("footer") %>
+
     </div>
-    <script>
-        document.addEventListener("DOMContentLoaded", function () {
-          document.getElementById("todoform").addEventListener("submit", function (e) {
-            const title = document.getElementById("title").value.trim();
-            const dueDate = document.getElementById("dueDate").value;
-      
-            if (!title || !dueDate) {
-              alert("Both title and due date are required!");
-              e.preventDefault(); 
-            }
-          });
-        });
-      </script>
-      
+  </div>
 </body>
 </html>
-        
-        <!--<div>
-            <h5>Overdue</h5>
-            <ul class="list-none">
-                <li class="Todo-Item">
-                    <div class="group flex items-center w-full my-2 px-2 py-1 rounded hover:bg-purple-50">
-                      <input id="todo-checkbox-2" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-200"> 
-                      <label for="todo-checkbox-2" class="ml-2 text-sm text-gray-600 cursor-pointer">hjjw</label> 
-                      <a href="#" class="trash-icon hidden ml-2 group-hover:inline">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                          </svg> 
-                      </a>
-                    </div>
-                  </li>
-                  
-               
-                  <li class="Todo-Item">
-                    <div class="group flex items-center w-full my-2 px-2 py-1 rounded hover:bg-purple-50">
-                      <input id="todo-checkbox-1" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-200"> 
-                      <label for="todo-checkbox-1" class="ml-2 text-sm text-gray-600 cursor-pointer">jjw</label> 
-                      <a href="#" class="trash-icon hidden ml-2 group-hover:inline">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-4">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                          </svg> 
-                      </a>
-                    </div>
-                  </li>
-            </ul>
-            <h5>Due Today</h5>
-            <ul class="list-none">
-                <li>
-                    <div class="flex items-center w-fit my-2 px-2 py-1 rounded hover:bg-purple-50">
-                        <input id="todo-checkbox-3" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-200"> 
-                    <label for="todo-checkbox-3" class="ml-2 text-sm text-gray-600 cursor-pointer">hjjw</label>  </div>
-                </li>
-                <li>
-                    <div class="flex items-center w-fit my-2 px-2 py-1 rounded hover:bg-purple-50">
-                        <input id="todo-checkbox-4" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-200"> 
-                    <label for="todo-checkbox-4" class="ml-2 text-sm text-gray-600 cursor-pointer">pay</label>  </div>
-                </li>
-            <h5>Due later</h5>
-            <ul class="list-none">
-                <li>
-                    <div class="flex items-center w-fit my-2 px-2 py-1 rounded hover:bg-purple-50">
-                        <input id="todo-checkbox-5" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-200"> 
-                    <label for="todo-checkbox-5" class="ml-2 text-sm text-gray-600 cursor-pointer">hjjw</label>  </div>
-                </li>
-                <li>
-                    <div class="flex items-center w-fit my-2 px-2 py-1 rounded hover:bg-purple-50">
-                        <input id="todo-checkbox-6" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-200"> 
-                    <label for="todo-checkbox-6" class="ml-2 text-sm text-gray-600 cursor-pointer">pay</label>  </div>
-                </li>
-        </div>
-    </div>
-    
-
-</div>-->
